@@ -1,0 +1,710 @@
+import { StatusCodes } from 'http-status-codes';
+import sql from 'mssql';
+import { createTransactionSearch, addTableColumns } from '../utils/index.js';
+import CustomAPIError from '../errors/index.js';
+import { config } from '../database/config.js';
+
+const getTransactionSearch = async (req, res) => {
+  const [transactions, headers] = await createTransactionSearch();
+
+  await sql.connect(config);
+
+  let transactionLoggerTable = new sql.Table('Transaction_Logger');
+  transactionLoggerTable.create = true;
+
+  addTableColumns([
+    {
+      table: transactionLoggerTable,
+      name: 'search_id',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'save_transaction',
+      type: 'Bit',
+      size: false,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'transaction_name',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'search_query',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'transaction_count',
+      type: 'Int',
+      size: false,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'transaction_total_count',
+      type: 'Int',
+      size: false,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'limit',
+      type: 'Int',
+      size: false,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'offset',
+      type: 'Int',
+      size: false,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'timezone',
+      type: 'VarChar',
+      size: 40,
+      isNullable: true,
+    },
+    {
+      table: transactionLoggerTable,
+      name: 'submit_time_utc',
+      type: 'VarChar',
+      size: 40,
+      isNullable: true,
+    },
+  ]);
+
+  let transactionTable = new sql.Table('Transactions');
+  transactionTable.create = true;
+
+  addTableColumns([
+    {
+      table: transactionTable,
+      name: 'Id',
+      type: 'VarChar',
+      size: 22,
+      isNullable: false,
+    },
+    {
+      table: transactionTable,
+      name: 'submitTimeUtc',
+      type: 'DateTime',
+      size: false,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'Merchantid',
+      type: 'VarChar',
+      size: 25,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'ApplicationName1',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReasonCode1',
+      type: 'VarChar',
+      size: 3,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rCode1',
+      type: 'VarChar',
+      size: 2,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rFlag1',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rMessage1',
+      type: 'VarChar',
+      size: 300,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReturnCode1',
+      type: 'VarChar',
+      size: 10,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReconciliationId1',
+      type: 'VarChar',
+      size: 22,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'ApplicationName2',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReasonCode2',
+      type: 'VarChar',
+      size: 3,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rCode2',
+      type: 'VarChar',
+      size: 2,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rFlag2',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rMessage2',
+      type: 'VarChar',
+      size: 300,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReturnCode2',
+      type: 'VarChar',
+      size: 10,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReconciliationId2',
+      type: 'VarChar',
+      size: 22,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'ApplicationName3',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReasonCode3',
+      type: 'VarChar',
+      size: 3,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rCode3',
+      type: 'VarChar',
+      size: 2,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rFlag3',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rMessage3',
+      type: 'VarChar',
+      size: 300,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReturnCode3',
+      type: 'VarChar',
+      size: 10,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReconciliationId3',
+      type: 'VarChar',
+      size: 22,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'ApplicationName4',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReasonCode4',
+      type: 'VarChar',
+      size: 3,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rCode4',
+      type: 'VarChar',
+      size: 2,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rFlag4',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rMessage4',
+      type: 'VarChar',
+      size: 300,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReturnCode4',
+      type: 'VarChar',
+      size: 10,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReconciliationId4',
+      type: 'VarChar',
+      size: 22,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'ApplicationName5',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReasonCode5',
+      type: 'VarChar',
+      size: 3,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rCode5',
+      type: 'VarChar',
+      size: 2,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rFlag5',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_rMessage5',
+      type: 'VarChar',
+      size: 300,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReturnCode5',
+      type: 'VarChar',
+      size: 10,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'App_ReconciliationId5',
+      type: 'VarChar',
+      size: 22,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'CRI_Code',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'CRI_ApplicationName',
+      type: 'VarChar',
+      size: 40,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'CAI_xid',
+      type: 'VarChar',
+      size: 28,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'CAI_transactionId',
+      type: 'VarChar',
+      size: 20,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'CAI_eciRaw',
+      type: 'VarChar',
+      size: 1,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'DI_ipAddress',
+      type: 'VarChar',
+      size: 50,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_Address1',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_State',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_City',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_Country',
+      type: 'VarChar',
+      size: 30,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_PostalCode',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_Email',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_PhoneNumber',
+      type: 'VarChar',
+      size: 15,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_FirstName',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'BillTo_LastName',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'MDI_MDD1',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'MDI_MDD2',
+      type: 'VarChar',
+      size: 100,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'MDI_MDD3',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'MDI_MDD4',
+      type: 'VarChar',
+      size: 60,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'MDI_MDD27',
+      type: 'VarChar',
+      size: 30,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'MDI_MDD29',
+      type: 'VarChar',
+      size: 30,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'MDI_MDD30',
+      type: 'VarChar',
+      size: 30,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'AD_TotalAmount',
+      type: 'VarChar',
+      size: 20,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'AD_Currency',
+      type: 'VarChar',
+      size: 20,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PI_Type',
+      type: 'VarChar',
+      size: 12,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PI_Method',
+      type: 'VarChar',
+      size: 5,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PI_CardSuffix',
+      type: 'VarChar',
+      size: 4,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PI_CardPrefix',
+      type: 'VarChar',
+      size: 6,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PI_CardType',
+      type: 'VarChar',
+      size: 3,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PRI_CommerceIndicator',
+      type: 'VarChar',
+      size: 1,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PRI_ProcessorName',
+      type: 'VarChar',
+      size: 16,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PRI_ApprovalCode',
+      type: 'VarChar',
+      size: 6,
+      isNullable: true,
+    },
+    {
+      table: transactionTable,
+      name: 'PRI_RRN',
+      type: 'VarChar',
+      size: 12,
+      isNullable: true,
+    },
+  ]);
+
+  headers &&
+    headers.map((header) => {
+      transactionLoggerTable.rows.add(
+        header.searchId || null,
+        header.save || false,
+        header.name || null,
+        header.query || null,
+        header.count || null,
+        header.totalCount || null,
+        header.limit || null,
+        header.offset || 0,
+        header.sort || null,
+        header.timezone || null,
+        header.submitTimeUtc || null
+      );
+    });
+
+  transactions &&
+    transactions.map((transaction) => {
+      transactionTable.rows.add(
+        transaction.id,
+        transaction.submitTimeUtc || null,
+        transaction.merchantId || null,
+        transaction.applicationInformationName1 || null,
+        transaction.applicationInformationReasonCode1 || null,
+        transaction.applicationInformationRCode1 || null,
+        transaction.applicationInformationRFlag1 || null,
+        transaction.applicationInformationRCodeRMessage1 || null,
+        transaction.applicationInformationReturnCode1 || null,
+        transaction.applicationInformationRCodeReconciliationId1 || null,
+        transaction.applicationInformationName2 || null,
+        transaction.applicationInformationReasonCode2 || null,
+        transaction.applicationInformationRCode2 || null,
+        transaction.applicationInformationRFlag2 || null,
+        transaction.applicationInformationRCodeRMessage2 || null,
+        transaction.applicationInformationReturnCode2 || null,
+        transaction.applicationInformationRCodeReconciliationId2 || null,
+        transaction.applicationInformationName3 || null,
+        transaction.applicationInformationReasonCode3 || null,
+        transaction.applicationInformationRCode3 || null,
+        transaction.applicationInformationRFlag3 || null,
+        transaction.applicationInformationRCodeRMessage3 || null,
+        transaction.applicationInformationReturnCode3 || null,
+        transaction.applicationInformationRCodeReconciliationId3 || null,
+        transaction.applicationInformationName4 || null,
+        transaction.applicationInformationReasonCode4 || null,
+        transaction.applicationInformationRCode4 || null,
+        transaction.applicationInformationRFlag4 || null,
+        transaction.applicationInformationRCodeRMessage4 || null,
+        transaction.applicationInformationReturnCode4 || null,
+        transaction.applicationInformationRCodeReconciliationId4 || null,
+        transaction.applicationInformationName5 || null,
+        transaction.applicationInformationReasonCode5 || null,
+        transaction.applicationInformationRCode5 || null,
+        transaction.applicationInformationRFlag5 || null,
+        transaction.applicationInformationRCodeRMessage5 || null,
+        transaction.applicationInformationReturnCode5 || null,
+        transaction.applicationInformationRCodeReconciliationId5 || null,
+        transaction.clientReferenceInformationCode || null,
+        transaction.clientReferenceInformationApplicationName || null,
+        transaction.consumerAuthenticationInformationXid || null,
+        transaction.consumerAuthenticationInformationTransactionId || null,
+        transaction.consumerAuthenticationInformationEciRaw || null,
+        transaction.deviceInformationIpAddress || null,
+        transaction.billToAddress1 || null,
+        transaction.billToState || null,
+        transaction.billToCity || null,
+        transaction.billToCountry || null,
+        transaction.billToPostalCode || null,
+        transaction.billToEmail || null,
+        transaction.billToPhoneNumber || null,
+        transaction.billToFirstName || null,
+        transaction.billToLastName || null,
+        transaction.MDD1 || null,
+        transaction.MDD2 || null,
+        transaction.MDD3 || null,
+        transaction.MDD4 || null,
+        transaction.MDD27 || null,
+        transaction.MDD29 || null,
+        transaction.MDD30 || null,
+        transaction.amountDetailsTotalAmount || null,
+        transaction.currencyAmountDetails || null,
+        transaction.paymentType || null,
+        transaction.paymentMethod || null,
+        transaction.cardSuffix || null,
+        transaction.cardPrefix || null,
+        transaction.cardType || null,
+        transaction.processingInformationCommerceIndicator || null,
+        transaction.processorInformationName || null,
+        transaction.processorInformationApprovalCode || null,
+        transaction.processorInformationRetrievalReferenceNumber || null
+      );
+    });
+
+  const request = new sql.Request();
+
+  request.bulk(transactionTable, (err) => {
+    if (err) {
+      console.log('bulk insert error');
+      console.log(err);
+      return;
+    }
+  });
+
+  request.bulk(transactionLoggerTable, (err) => {
+    if (err) {
+      console.log('bulk insert error');
+      console.log(err);
+      return;
+    }
+  });
+
+  res.status(StatusCodes.OK).json({
+    message: 'Success',
+    headers,
+    // transactions,
+  });
+};
+
+export { getTransactionSearch };
